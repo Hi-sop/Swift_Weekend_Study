@@ -7,19 +7,26 @@
 
 import UIKit
 
-class LogInViewController: UIViewController {
-    
-    @IBOutlet weak var pwTextField: UITextField!
-    var diaryViewController: DiaryViewController?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        diaryViewController = self.storyboard?.instantiateViewController(withIdentifier: "diary") as? DiaryViewController
+struct Query {
+    func addNewPassword(account: String, newText: String) -> Bool {
+        guard let data = newText.data(using: String.Encoding.utf8) else {
+            return false
+        }
+        
+        let query: [String: Any] = [kSecClass as String : kSecClassInternetPassword,
+                                    kSecAttrAccount as String: account,
+                                    kSecValueData as String: data]
+        
+        let status = SecItemAdd(query as CFDictionary, nil)
+        
+        guard status == errSecSuccess else {
+            return false
+        }
+        return true
     }
     
-    @IBAction func tapLogInButton(_ sender: Any) {
+    func queryData(account: String) -> String? {
         var item: CFTypeRef?
-        let account = "newAccount"
         
         let query: [String: Any] = [kSecClass as String: kSecClassInternetPassword,
                                     kSecReturnAttributes as String: true,
@@ -28,17 +35,42 @@ class LogInViewController: UIViewController {
         
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         
-        guard let unwrapItem = item as? [String: Any],
-              let passwordData = unwrapItem[kSecValueData as String] as? Data else {
-            return
+        guard status == errSecSuccess else {
+            return nil
         }
         
-        guard let password = String(
-            data: passwordData,
-            encoding: String.Encoding.utf8
-        ) else {
-            return
+        guard let unwrapItem = item as? [String: Any],
+              let passwordData = unwrapItem[kSecValueData as String] as? Data,
+              let password = String(data: passwordData, encoding: String.Encoding.utf8) else {
+            return nil
         }
+        
+        return password
+    }
+}
+
+class LogInViewController: UIViewController {
+    @IBOutlet weak var pwTextField: UITextField!
+    var diaryViewController: DiaryViewController?
+    var changePasswordViewController: ChangePasswordViewController?
+    private let account = "newAccount1"
+    let query = Query()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        diaryViewController = self.storyboard?.instantiateViewController(withIdentifier: "diary") as? DiaryViewController
+        changePasswordViewController = self.storyboard?.instantiateViewController(withIdentifier: "changePassword") as? ChangePasswordViewController
+    }
+    
+    @IBAction func tapChangeButton(_ sender: UIButton) {
+        guard let changePasswordViewController = changePasswordViewController else { return }
+        changePasswordViewController.modalPresentationStyle = .popover
+        present(changePasswordViewController, animated: true)
+    }
+    
+    @IBAction func tapLogInButton(_ sender: Any) {
+        let password = query.queryData(account: account)
         
         if password == pwTextField.text {
             guard let diaryViewController = diaryViewController else { return }
@@ -51,36 +83,23 @@ class LogInViewController: UIViewController {
     }
     
     @IBAction func addNewPassword(_ sender: Any) {
-        let password = pwTextField.text
-        let account = "newAccount"
+        let password = query.queryData(account: account)
         
-        guard let password = password else {
+        guard password != pwTextField.text else {
+            showAlert("이미 패스워드가 있습니다")
             return
         }
         
-        let data = password.data(using: String.Encoding.utf8)!
-        
-        var query: [String: Any] = [kSecClass as String : kSecClassInternetPassword,
-                                    kSecAttrAccount as String: account,
-                                    kSecValueData as String: data]
-        
-        let status = SecItemAdd(query as CFDictionary, nil)
-        
-        if status == errSecDuplicateItem {
-            showAlert("같은 패스워드가 존재합니다 새로운 패스워드로 교체됩니다.")
-            let newData: [String: Any] = [kSecValueData as String: password]
-            let updateStatus = SecItemUpdate(query as CFDictionary, newData as CFDictionary)
-            
-            guard updateStatus == errSecSuccess else {
-                let updateStatusString = String(updateStatus)
-                showAlert(updateStatusString)
-                return
-            }
+        guard let newText = pwTextField.text else {
+            return
         }
         
-        pwTextField.text = ""
-        showAlert("패스워드 등록성공")
+        guard query.addNewPassword(account: account, newText: newText) else {
+            showAlert("패스워드 등록 실패")
+            return
+        }
         
+        showAlert("패스워드 등록 성공")
     }
     
     private func showAlert(_ message: String) {

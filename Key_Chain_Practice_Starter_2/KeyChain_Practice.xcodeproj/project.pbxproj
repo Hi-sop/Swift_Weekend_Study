@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B9DB4A112B2D509200FC2B08 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DB4A102B2D509200FC2B08 /* ChangePasswordViewController.swift */; };
 		CF54E397278D2F8800CBB23D /* DiaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF54E396278D2F8800CBB23D /* DiaryViewController.swift */; };
 		CF9E589B278BC93400FFFB9D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9E589A278BC93400FFFB9D /* AppDelegate.swift */; };
 		CF9E589D278BC93400FFFB9D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9E589C278BC93400FFFB9D /* SceneDelegate.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B9DB4A102B2D509200FC2B08 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		CF54E396278D2F8800CBB23D /* DiaryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryViewController.swift; sourceTree = "<group>"; };
 		CF9E5897278BC93400FFFB9D /* KeyChain_Practice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyChain_Practice.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF9E589A278BC93400FFFB9D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +53,7 @@
 			children = (
 				CF9E589E278BC93400FFFB9D /* LogInViewController.swift */,
 				CF54E396278D2F8800CBB23D /* DiaryViewController.swift */,
+				B9DB4A102B2D509200FC2B08 /* ChangePasswordViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -160,6 +163,7 @@
 				CF9E589F278BC93400FFFB9D /* LogInViewController.swift in Sources */,
 				CF9E589B278BC93400FFFB9D /* AppDelegate.swift in Sources */,
 				CF54E397278D2F8800CBB23D /* DiaryViewController.swift in Sources */,
+				B9DB4A112B2D509200FC2B08 /* ChangePasswordViewController.swift in Sources */,
 				CF9E589D278BC93400FFFB9D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
